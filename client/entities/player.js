@@ -15,6 +15,9 @@ class Player extends Entity {
 
         this.moveSpeed = 0;
 
+        this.trueX = this.x;
+        this.trueY = this.y;
+
         this.actions = {
             up: false,
             down: false,

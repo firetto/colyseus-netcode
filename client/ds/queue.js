@@ -20,7 +20,8 @@ class Queue {
     get length() {
         return this.tail - this.head;
     }
-    isEmpty() {
+    get isEmpty() {
         return this.length === 0;   
     }
 }
+exports.Queue = Queue;

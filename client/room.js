@@ -21,10 +21,13 @@ function onJoin() {
             changes.forEach(change => {
                 switch (change.field) {
                     case "x":
-                        p.x = change.value;
+                        p.trueX = change.value;
                         break;
                     case "y":
-                        p.y = change.value;
+                        p.trueY = change.value;
+                        break;
+                    case "lastProcessedTick":
+                        game.reconciliate(change.value);
                         break;
                 }
             });

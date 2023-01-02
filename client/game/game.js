@@ -2,11 +2,15 @@ const { sharedconsts } = require("../../shared/sharedconsts.js");
 const { Player } = require("../entities/player.js");
 const { canvas } = require("../graphics/canvas.js");
 const { options } = require("./options.js");
+const { Queue } = require("../ds/queue.js");
 
 class Game {
     constructor() {
         this.players = {};
-        this.inputHistory = {};
+
+        this.inputHistory = new Queue();
+    
+        this.elapsedTicks = 0;
     }
 
     addPlayer(id) {
@@ -38,6 +42,9 @@ class Game {
 
     loop(delta) {
         let mult = sharedconsts.room.tickRate * delta / 60;
+
+        this.elapsedTicks += mult;
+
         for (let id in this.players) {
             if (options.clientsidePrediction) {
                 this.players[id].update(mult);
@@ -57,6 +64,17 @@ class Game {
         }
 
         canvas.ticker.remove((delta) => {this.loop(delta);});
+    }
+
+    reconciliate(lastProcessedTick) {
+        if (this.inputHistory.isEmpty) {
+            return;
+        }
+        console.log(this.inputHistory.peek().tick, lastProcessedTick);
+        while(this.inputHistory.length > 0
+            && this.inputHistory.peek().tick <= lastProcessedTick) {
+            this.inputHistory.dequeue();
+        }
     }
 }
 

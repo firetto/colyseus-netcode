@@ -38,7 +38,7 @@ export class GameRoom extends Room {
         this.setSimulationInterval();
 
 
-        this.onMessage("player-key-press", (client, msg) => {
+        this.onMessage("player-key-press", (client, {msg, tick}) => {
             let p = this.state.players[client.sessionId];
             if (p.actions.hasOwnProperty(msg)) {
                 p.actions[msg] = true;
@@ -50,8 +50,9 @@ export class GameRoom extends Room {
                     p.actions.moonwalkLeft = true;
                 }
             }
+            p.lastProcessedTick = tick;
         });
-        this.onMessage("player-key-release", (client, msg) => {
+        this.onMessage("player-key-release", (client, {msg, tick}) => {
             let p = this.state.players[client.sessionId];
             if (p.actions.hasOwnProperty(msg)) {
                 p.actions[msg] = false;
@@ -62,6 +63,7 @@ export class GameRoom extends Room {
                     p.actions.moonwalkRight = false;
                 }
             }
+            p.lastProcessedTick = tick;
         });
 
 

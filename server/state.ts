@@ -54,6 +54,9 @@ export class Player extends Entity {
     height = sharedconsts.player.hitboxHeight;
 
     moveSpeed: number = 0;
+
+    @type("number")
+    lastProcessedTick = 0;
 }
 
 export class Projectile extends Entity {

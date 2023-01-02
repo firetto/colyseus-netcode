@@ -3,9 +3,23 @@ const _room = require("../room.js");
 const { localconsts } = require("./localconsts.js");
 const { game } = require("./game.js");
 
+let codeToMsg = {};
+let pressed = {
+    up: false,
+    left: false,
+    right: false,
+    down: false,
+    action: false,
+};
 
 function setupControls() {
 
+    codeToMsg[localconsts.controls.jump] = "up";
+    codeToMsg[localconsts.controls.moveLeft] = "left";
+    codeToMsg[localconsts.controls.moveRight] = "right";
+    codeToMsg[localconsts.controls.moveDown] = "down";
+    codeToMsg[localconsts.controls.action] = "action";
+    
     document.addEventListener("keydown", (e) => {
         controlsDown(e.code, true);
     });
@@ -18,38 +32,31 @@ function setupControls() {
 exports.setupControls = setupControls;
 
 function controlsDown(code, press) {
-    let cmd = (press) ? "press" : "release";
-    let call = `player-key-${cmd}`;
-    switch (code) {
-        case localconsts.controls.jump:
-            _room.send(call, "up");
-            playerHandleControl(press, "up");
-            return;
-        case localconsts.controls.moveLeft:
-            _room.send(call, "left");
-            playerHandleControl(press, "left");
-            return;
-        case localconsts.controls.moveRight:
-            _room.send(call, "right");
-            playerHandleControl(press, "right");
-            return;
-        case localconsts.controls.moveDown:
-            _room.send(call, "down");
-            playerHandleControl(press, "down");
-            return;
-        case localconsts.controls.action:
-            _room.send(call, "action");
-            playerHandleControl(press, "action");
-            return;
-    }
+    playerHandleControl(press, codeToMsg[code]);
+    
 }
 function playerHandleControl(press, msg) {
-    if (press) {
-        playerHandlePress(msg);
+    if (pressed[msg] != press) {
+        let cmd = (press) ? "press" : "release";
+        let call = `player-key-${cmd}`;
+        _room.send(call, {
+            msg: msg,
+            tick: game.elapsedTicks,
+        });
+        
+        if (press) {
+            playerHandlePress(msg);
+        }
+        else {
+            playerHandleRelease(msg);
+        }
+        game.inputHistory.enqueue({
+            press: press,
+            msg: msg,
+            tick: game.elapsedTicks
+        });
     }
-    else {
-        playerHandleRelease(msg);
-    }
+    pressed[msg] = press;
 }
 function playerHandlePress(msg) {
     let p = game.getPlayer(_room.getSessionId());

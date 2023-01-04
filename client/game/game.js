@@ -3,6 +3,7 @@ const { Player } = require("../entities/player.js");
 const { canvas } = require("../graphics/canvas.js");
 const { options } = require("./options.js");
 const { Queue } = require("../ds/queue.js");
+const { room } = require("../client.js");
 
 class Game {
     constructor() {
@@ -38,6 +39,10 @@ class Game {
 
     getPlayer(id) {
         return this.players[id];
+    }
+
+    getThisPlayer() {
+        return this.getPlayer(room.sessionId);
     }
 
     loop(delta) {

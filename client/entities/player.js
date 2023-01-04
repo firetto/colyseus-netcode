@@ -104,6 +104,20 @@ class Player extends Entity {
             this.released.up = false;
         }
     }
-
+    copy() {
+        let copy = new Player();
+        copy.x = this.x;
+        copy.y = this.y;
+        copy.trueX = this.trueX;
+        copy.trueY = this.trueY;
+        copy.velX = this.velX;
+        copy.velY = this.velY;
+        copy.accelX = this.accelX;
+        copy.accelY = this.accelY;
+        copy.facingLeft = this.facingLeft;
+        copy.moveSpeed = this.moveSpeed;
+        copy.sessionId = this.sessionId;
+        return copy;
+    }
 }
 exports.Player = Player;

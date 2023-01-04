@@ -53,7 +53,8 @@ function playerHandleControl(press, msg) {
         game.inputHistory.enqueue({
             press: press,
             msg: msg,
-            tick: game.elapsedTicks
+            tick: game.elapsedTicks,
+            player: game.getThisPlayer().copy(),
         });
     }
     pressed[msg] = press;
